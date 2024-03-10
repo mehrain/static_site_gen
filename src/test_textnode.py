@@ -14,6 +14,26 @@ class TestTextNode(unittest.TestCase):
     def test_repr(self):
         expected_repr = "text: Hello, text_type: greeting, url: http://example.com"
         self.assertEqual(repr(self.node1), expected_repr)
+        
+class TestTextNode(unittest.TestCase):
+    def setUp(self):
+        self.node1 = TextNode(text_type="text", text="Hello")
+        self.node2 = TextNode(text_type="bold", text="Hello")
+        self.node3 = TextNode(text_type="italic", text="Hello")
+        self.node4 = TextNode(text_type="code", text="Hello")
+        self.node5 = TextNode(text_type="link", text="Hello", url="http://example.com")
+        self.node6 = TextNode(text_type="image", text="Hello", url="http://example.com/image.png")
+        self.node7 = TextNode(text_type="unknown", text="Hello")
+
+    def test_text_node_to_html_node(self):
+        self.assertEqual(self.node1.text_node_to_html_node().to_html(), 'Hello')
+        self.assertEqual(self.node2.text_node_to_html_node().to_html(), '<b>Hello</b>')
+        self.assertEqual(self.node3.text_node_to_html_node().to_html(), '<i>Hello</i>')
+        self.assertEqual(self.node4.text_node_to_html_node().to_html(), '<code>Hello</code>')
+        self.assertEqual(self.node5.text_node_to_html_node().to_html(), '<a href="http://example.com">Hello</a>')
+        self.assertEqual(self.node6.text_node_to_html_node().to_html(), '<img src="http://example.com/image.png" alt="Hello">')
+        with self.assertRaises(ValueError):
+            self.node7.text_node_to_html_node()
 
 
 if __name__ == "__main__":
