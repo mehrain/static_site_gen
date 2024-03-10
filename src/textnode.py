@@ -29,3 +29,4 @@ class TextNode:
             return LeafNode(tag="img", props={"src": self.url, "alt": self.text})
         else:
             raise ValueError(f"Unknown text type: {self.text_type}")
+
