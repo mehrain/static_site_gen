@@ -33,9 +33,14 @@ class ParentNode(HTMLNode):
     def __init__(self, tag=None, value=None, children=None, props=None):
         super().__init__(tag, value, children, props)
         
-        def to_html(self):
-            if self.tag is None:
-                raise ValueError("Parent nodes must have a tag")
-            elif seld.children is None:
-                raise ValueError("Parent nodes must have children")
-            
+    def to_html(self):
+        if self.tag is None:
+            raise ValueError("Parent nodes must have a tag")
+        if not self.children:
+            raise ValueError("Parent nodes must have children")
+        else:
+            html = f"<{self.tag}{self.props_to_html()}>"
+            for child in self.children:
+                html += child.to_html()
+            html += f"</{self.tag}>"
+            return html

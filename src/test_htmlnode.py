@@ -1,6 +1,7 @@
 import unittest
 from htmlnode import HTMLNode
 from htmlnode import LeafNode
+from htmlnode import ParentNode
 
 class TestHTMLNode(unittest.TestCase):
     def setUp(self):
@@ -27,3 +28,18 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(self.leaf2.to_html(), 'Hello')
         with self.assertRaises(ValueError):
             self.leaf3.to_html()
+            
+class TestParentNode(unittest.TestCase):
+    def setUp(self):
+        self.node1 = ParentNode("div", None, [LeafNode("p", "Hello", {"class": "greeting", "id": "greeting1"})], {"class": "container"})
+        self.node2 = ParentNode("div", None, [LeafNode("p", "Goodbye", {"class": "farewell", "id": "farewell1"})], {"class": "container"})
+        self.node3 = ParentNode(None, None, [LeafNode("p", "Hello", {"class": "greeting", "id": "greeting1"})], {"class": "container"})
+        self.node4 = ParentNode("div", None, None, {"class": "container"})
+
+    def test_to_html(self):
+        self.assertEqual(self.node1.to_html(), '<div class="container"><p class="greeting" id="greeting1">Hello</p></div>')
+        self.assertEqual(self.node2.to_html(), '<div class="container"><p class="farewell" id="farewell1">Goodbye</p></div>')
+        with self.assertRaises(ValueError):
+            self.node3.to_html()
+        with self.assertRaises(ValueError):
+            self.node4.to_html()
