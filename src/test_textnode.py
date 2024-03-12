@@ -1,7 +1,9 @@
 import unittest
-from textnode import TextNode
+from textnode import TextNode, extract_markdown_images, extract_markdown_links
 
-class TestTextNode(unittest.TestCase):
+
+
+class TestTextNodeEquality(unittest.TestCase):
     def setUp(self):
         self.node1 = TextNode("Hello", "greeting", "http://example.com")
         self.node2 = TextNode("Hello", "greeting", "http://example.com")
@@ -15,7 +17,17 @@ class TestTextNode(unittest.TestCase):
         expected_repr = "text: Hello, text_type: greeting, url: http://example.com"
         self.assertEqual(repr(self.node1), expected_repr)
         
-class TestTextNode(unittest.TestCase):
+class TestTextNodeRepresentation(unittest.TestCase):
+    def setUp(self):
+        self.node1 = TextNode(text_type="text", text="Hello")
+        self.node2 = TextNode(text_type="bold", text="Hello")
+        self.node3 = TextNode(text_type="italic", text="Hello")
+        self.node4 = TextNode(text_type="code", text="Hello")
+        self.node5 = TextNode(text_type="link", text="Hello", url="http://example.com")
+        self.node6 = TextNode(text_type="image", text="Hello", url="http://example.com/image.png")
+        self.node7 = TextNode(text_type="unknown", text="Hello")
+
+class TestTextNodeToHtmlNode(unittest.TestCase):
     def setUp(self):
         self.node1 = TextNode(text_type="text", text="Hello")
         self.node2 = TextNode(text_type="bold", text="Hello")
@@ -34,6 +46,18 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(self.node6.text_node_to_html_node().to_html(), '<img src="http://example.com/image.png" alt="Hello">')
         with self.assertRaises(ValueError):
             self.node7.text_node_to_html_node()
+
+class TestTextNodeMarkdownExtraction(unittest.TestCase):
+    def test_extract_markdown_images(self):
+        text = "This is text with an image ![alt text](https://www.example.com/image.jpg) and another ![another alt text](https://www.example.com/another.jpg)"
+        expected = [("alt text", "https://www.example.com/image.jpg"), ("another alt text", "https://www.example.com/another.jpg")]
+        self.assertEqual(extract_markdown_images(text), expected)
+
+    def test_extract_markdown_links(self):
+        text = "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)"
+        expected = [("link", "https://www.example.com"), ("another", "https://www.example.com/another")]
+        self.assertEqual(extract_markdown_links(text), expected)
+
 
 
 if __name__ == "__main__":

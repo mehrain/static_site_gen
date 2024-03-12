@@ -1,4 +1,16 @@
 from htmlnode import LeafNode
+import re
+
+
+def extract_markdown_images(text):
+    pattern = r"!\[(.*?)\]\((.*?)\)"
+    matches = re.findall(pattern, text)
+    return [(text, url) for text, url in matches]
+    
+def extract_markdown_links(text):
+    pattern = r"\[(.*?)\]\((.*?)\)"
+    matches = re.findall(pattern, text)
+    return [(text, url) for text, url in matches]
 
 class TextNode:
     def __init__(self, text=None, text_type=None, url=None):
@@ -29,4 +41,5 @@ class TextNode:
             return LeafNode(tag="img", props={"src": self.url, "alt": self.text})
         else:
             raise ValueError(f"Unknown text type: {self.text_type}")
+        
 
