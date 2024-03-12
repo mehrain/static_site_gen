@@ -14,7 +14,10 @@ class TextNode:
         return False
     
     def __repr__(self):
-        return f"text: {self.text}, text_type: {self.text_type}, url: {self.url}"
+        repr_str = f"text: {self.text}, text_type: {self.text_type}"
+        if self.url is not None:
+            repr_str += f", url: {self.url}"
+        return repr_str
     
     def text_node_to_html_node(self):
         if self.text_type == "text":

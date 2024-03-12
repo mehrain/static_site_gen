@@ -29,6 +29,23 @@ class TestTextNodeRepresentation(unittest.TestCase):
         self.node6 = TextNode(text_type="image", text="Hello", url="http://example.com/image.png")
         self.node7 = TextNode(text_type="unknown", text="Hello")
 
+    def test_text_node_representation(self):
+        expected_repr1 = "text: Hello, text_type: text"
+        expected_repr2 = "text: Hello, text_type: bold"
+        expected_repr3 = "text: Hello, text_type: italic"
+        expected_repr4 = "text: Hello, text_type: code"
+        expected_repr5 = "text: Hello, text_type: link, url: http://example.com"
+        expected_repr6 = "text: Hello, text_type: image, url: http://example.com/image.png"
+        expected_repr7 = "text: Hello, text_type: unknown"
+
+        self.assertEqual(repr(self.node1), expected_repr1)
+        self.assertEqual(repr(self.node2), expected_repr2)
+        self.assertEqual(repr(self.node3), expected_repr3)
+        self.assertEqual(repr(self.node4), expected_repr4)
+        self.assertEqual(repr(self.node5), expected_repr5)
+        self.assertEqual(repr(self.node6), expected_repr6)
+        self.assertEqual(repr(self.node7), expected_repr7)
+
 class TestTextNodeToHtmlNode(unittest.TestCase):
     def setUp(self):
         self.node1 = TextNode(text_type="text", text="Hello")
