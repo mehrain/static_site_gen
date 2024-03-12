@@ -1,5 +1,7 @@
 import unittest
-from textnode import TextNode, extract_markdown_images, extract_markdown_links
+from textnode import TextNode
+from textnode import MarkDownExtractor
+
 
 
 
@@ -47,18 +49,25 @@ class TestTextNodeToHtmlNode(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.node7.text_node_to_html_node()
 
-class TestTextNodeMarkdownExtraction(unittest.TestCase):
+
+class TestMarkDownExtractor(unittest.TestCase):
     def test_extract_markdown_images(self):
-        text = "This is text with an image ![alt text](https://www.example.com/image.jpg) and another ![another alt text](https://www.example.com/another.jpg)"
-        expected = [("alt text", "https://www.example.com/image.jpg"), ("another alt text", "https://www.example.com/another.jpg")]
-        self.assertEqual(extract_markdown_images(text), expected)
+        extractor = MarkDownExtractor("This is text with an image ![alt text](https://www.example.com/image.jpg)")
+        expected = [("alt text", "https://www.example.com/image.jpg")]
+        self.assertEqual(extractor.extract_markdown_images(), expected)
 
     def test_extract_markdown_links(self):
-        text = "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)"
-        expected = [("link", "https://www.example.com"), ("another", "https://www.example.com/another")]
-        self.assertEqual(extract_markdown_links(text), expected)
+        extractor = MarkDownExtractor("This is text with a [link](https://www.example.com)")
+        expected = [("link", "https://www.example.com")]
+        self.assertEqual(extractor.extract_markdown_links(), expected)
 
-
+    def test_no_text(self):
+        extractor = MarkDownExtractor()
+        with self.assertRaises(ValueError):
+            extractor.extract_markdown_images()
+        with self.assertRaises(ValueError):
+            extractor.extract_markdown_links()
 
 if __name__ == "__main__":
     unittest.main()
+

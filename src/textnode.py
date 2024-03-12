@@ -2,16 +2,6 @@ from htmlnode import LeafNode
 import re
 
 
-def extract_markdown_images(text):
-    pattern = r"!\[(.*?)\]\((.*?)\)"
-    matches = re.findall(pattern, text)
-    return [(text, url) for text, url in matches]
-    
-def extract_markdown_links(text):
-    pattern = r"\[(.*?)\]\((.*?)\)"
-    matches = re.findall(pattern, text)
-    return [(text, url) for text, url in matches]
-
 class TextNode:
     def __init__(self, text=None, text_type=None, url=None):
         self.text = text
@@ -42,4 +32,30 @@ class TextNode:
         else:
             raise ValueError(f"Unknown text type: {self.text_type}")
         
-
+    def extract_markdown_text_nodes(self, text):
+        images = self.extract_markdown_images(text)
+        links = self.extract_markdown_links(text)
+        text_nodes = []
+        for image in images:
+            text = image[0]
+            url = image[1]
+            text_nodes.append(TextNode(text=text, text_type="image", url=url))
+        for link in links:
+            text = link[0]
+            url = link[1]
+            text_nodes.append(TextNode(text=text, text_type="link", url=url))
+        return text_nodes
+    
+class MarkDownExtractor:
+    def __init__(self, text=None):
+        self.text = text
+    
+    def extract_markdown_images(self):
+        if self.text is None:
+            raise ValueError("No text provided")
+        return re.findall(r"!\[(.*?)\]\((.*?)\)", self.text)
+    
+    def extract_markdown_links(self):
+        if self.text is None:
+            raise ValueError("No text provided")
+        return re.findall(r"\[(.*?)\]\((.*?)\)", self.text)
