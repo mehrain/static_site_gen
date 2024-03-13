@@ -49,6 +49,9 @@ class TextNode:
             text_nodes.append(TextNode(text=text, text_type="link", url=url))
         return text_nodes
     
+    
+    
+    
 class MarkDownExtractor:
     def __init__(self, text=None):
         self.text = text
