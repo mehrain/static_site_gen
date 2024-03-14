@@ -36,14 +36,10 @@ def split_nodes_delimiter(old_nodes=None, delimiter=None, text_type=None):
     return new_nodes
 
 def split_nodes_images(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        pass      
     '''
-    Sure, here's a step-by-step plan to implement the split_nodes_images function:
-
-Start by defining the function split_nodes_images that takes old_nodes as an argument.
-
-Initialize an empty list new_nodes that will hold the resulting TextNode objects after splitting.
-
-Iterate over each node in old_nodes.
 
 Check if the text_type of the node is text_type_text. If it's not, append the node to new_nodes and continue to the next iteration.
 
