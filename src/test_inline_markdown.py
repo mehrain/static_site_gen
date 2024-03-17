@@ -2,6 +2,7 @@ import unittest
 from textnode import *
 from inline_markdown import *
 
+
 class TestSplitNodesDelimiter(unittest.TestCase):
     def test_split_text_nodes(self):
         old_nodes = [
@@ -49,6 +50,18 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         ]
         with self.assertRaises(ValueError):
             split_nodes_delimiter(old_nodes, "**", "invalid")
+
+
+
+def test_split_nodes_image_no_image(self):
+    node = TextNode("This is a text without an image.", text_type_text)
+    new_nodes = split_nodes_image([node])
+    self.assertEqual(new_nodes, [node])
+
+def test_split_nodes_link_no_link(self):
+    node = TextNode("This is a text without a link.", text_type_text)
+    new_nodes = split_nodes_link([node])
+    self.assertEqual(new_nodes, [node])
 
 if __name__ == "__main__":
     unittest.main()

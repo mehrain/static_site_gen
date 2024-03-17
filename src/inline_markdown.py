@@ -1,4 +1,6 @@
-from textnode import TextNode, MarkDownExtractor
+from textnode import *
+from htmlnode import *
+import re
 
 def split_nodes_delimiter(old_nodes=None, delimiter=None, text_type=None):
     if old_nodes is None:
@@ -35,36 +37,40 @@ def split_nodes_delimiter(old_nodes=None, delimiter=None, text_type=None):
             new_nodes.append(TextNode(text=text, text_type=new_type))
     return new_nodes
 
-def split_nodes_images(old_nodes):
+def split_nodes_image(nodes):
     new_nodes = []
-    for node in old_nodes:
-        pass      
-    '''
+    for node in nodes:
+        if isinstance(node, TextNode) and node.text_type == "text":
+            text = node.text
+            prev_end = 0
+            for match in re.finditer(r"!\[(.*?)\]\((.*?)\)", text):
+                alt_text, image_url = match.groups()
+                start, end = match.span()
+                if start > prev_end:
+                    new_nodes.append(TextNode(text=text[prev_end:start], text_type="text"))
+                new_nodes.append(TextNode(text=alt_text, text_type="image", url=image_url))
+                prev_end = end
+            if prev_end < len(text):
+                new_nodes.append(TextNode(text=text[prev_end:], text_type="text"))
+        else:
+            new_nodes.append(node)
+    return new_nodes
 
-Check if the text_type of the node is text_type_text. If it's not, append the node to new_nodes and continue to the next iteration.
-
-If the text_type of the node is text_type_text, create a MarkDownExtractor object with the text of the node.
-
-Call the extract_markdown_images method of the MarkDownExtractor object to get a list of all images in the text. Each image is represented as a tuple containing the alt text and the URL of the image.
-
-If there are no images in the text, append the node to new_nodes and continue to the next iteration.
-
-If there are images in the text, iterate over each image in the list of images.
-
-For each image, split the text of the node into two parts: the part before the image and the part including and after the image. You can use the str.split method with the markdown syntax of the image as the delimiter and 1 as the maximum number of splits.
-
-Create a new TextNode with the part of the text before the image and append it to new_nodes.
-
-Create a new TextNode with the alt text of the image, the URL of the image, and text_type set to text_type_image, and append it to new_nodes.
-
-Update the text of the node to be the part of the text after the image.
-
-After processing all images, if there's any text left in the node, create a new TextNode with this remaining text and append it to new_nodes.
-
-After processing all nodes in old_nodes, return new_nodes.
-    '''
-    
-    
-        
-
-
+def split_nodes_link(nodes):
+    new_nodes = []
+    for node in nodes:
+        if isinstance(node, TextNode) and node.text_type == "text":
+            text = node.text
+            prev_end = 0
+            for match in re.finditer(r"\[(.*?)\]\((.*?)\)", text):
+                link_text, link_url = match.groups()
+                start, end = match.span()
+                if start > prev_end:
+                    new_nodes.append(TextNode(text=text[prev_end:start], text_type="text"))
+                new_nodes.append(TextNode(text=link_text, text_type="link", url=link_url))
+                prev_end = end
+            if prev_end < len(text):
+                new_nodes.append(TextNode(text=text[prev_end:], text_type="text"))
+        else:
+            new_nodes.append(node)
+    return new_nodes
